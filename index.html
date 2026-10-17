@@ -244,6 +244,15 @@ function jsonp(url, cb) {
   document.head.appendChild(s);
 }
 
+
+// Partner attribution: ?org=xxx tags this visit's opt-ins
+var ORG_TAG = '';
+try {
+  var m = location.search.match(/[?&]org=([A-Za-z0-9_-]{1,32})/);
+  if (m) { ORG_TAG = m[1].toLowerCase(); try { localStorage.setItem('rbf_org', ORG_TAG); } catch (e) {} }
+  else { try { ORG_TAG = localStorage.getItem('rbf_org') || ''; } catch (e) {} }
+} catch (e) {}
+
 let liveTotals = null; // {total, zips:{}} from backend, when configured
 
 function renderTotals() {
@@ -294,7 +303,7 @@ function doOptin() {
   markOpted(z);
   if (COUNTER_ENDPOINT) {
     msg.innerHTML = '<p>Counting…</p>';
-    jsonp(COUNTER_ENDPOINT + '?optin=' + encodeURIComponent(z), function (data) {
+    jsonp(COUNTER_ENDPOINT + '?optin=' + encodeURIComponent(z) + (ORG_TAG ? '&org=' + encodeURIComponent(ORG_TAG) : ''), function (data) {
       if (data && data.ok) { liveTotals = { total: data.total, zips: Object.assign({}, liveTotals ? liveTotals.zips : {}, { [z]: data.zipCount }) }; }
       msg.innerHTML = '<p>✓ <strong>Counted in ' + z + '.</strong> Thank you — every tap is public demand evidence.</p>';
       renderTotals();

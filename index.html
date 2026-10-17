@@ -38,8 +38,12 @@
   footer { margin-top:3em; padding-top:1em; border-top:1px solid var(--line); }
   @media (max-width:520px){ .vs{grid-template-columns:1fr;} .bignum{font-size:1.6rem;} }
 </style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#16265c">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
 </head>
 <body>
+<button id="install-btn" title="Install app" style="display:none;position:fixed;top:12px;right:12px;z-index:9999;background:#16265c;color:#fff;border:none;border-radius:8px;padding:10px 14px;font-size:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)">⬇ Get App</button>
 <div class="wrap">
 
 <h1>📡 Rural Broadband Fix — Oregon</h1>
@@ -381,6 +385,30 @@ $('emailBtn').addEventListener('click', () => {
   );
   window.location.href = 'mailto:?' + 'subject=' + subject + '&body=' + body;
 });
+</script>
+
+<script>
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(function(){}); }
+(function(){
+  var btn = document.getElementById('install-btn');
+  var deferred = null;
+  function isStandalone(){ return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone; }
+  if (isStandalone() || localStorage.getItem('rbf-install-dismissed')) { return; }
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault(); deferred = e;
+    if (btn) btn.style.display = '';
+  });
+  // fallback: show button after 3s if no prompt fired (iOS etc.)
+  setTimeout(function(){ if (!deferred && btn && !isStandalone()) btn.style.display=''; }, 3000);
+  if (btn) btn.addEventListener('click', function(){
+    if (deferred) { deferred.prompt(); deferred.userChoice.then(function(){ localStorage.setItem('rbf-install-dismissed','1'); btn.style.display='none'; }); }
+    else {
+      var ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
+      alert(ios ? 'Tap Share, then "Add to Home Screen".' : 'Tap the browser menu (⋮), then "Add to Home screen" or "Install".');
+      localStorage.setItem('rbf-install-dismissed','1'); btn.style.display='none';
+    }
+  });
+})();
 </script>
 </body>
 </html>

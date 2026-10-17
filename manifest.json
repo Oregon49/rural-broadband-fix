@@ -1,0 +1,21 @@
+{
+  "name": "Rural Broadband Fix \u2014 Oregon",
+  "short_name": "Broadband Fix",
+  "description": "Starlink vs fiber: what rural internet really costs.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#16265c",
+  "theme_color": "#16265c",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

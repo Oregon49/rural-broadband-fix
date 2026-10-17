@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rural Broadband Fix — Oregon</title>
+<meta name="description" content="Compare the real cost of connecting rural Oregon: Starlink vs. fiber buildout. Enter your ZIP code.">
+<style>
+  :root { --ink:#1a1a1a; --muted:#5a5a5a; --accent:#0b5fff; --good:#0a7a3d; --warn:#a35a00; --bg:#ffffff; --card:#f5f7fa; --line:#dfe3e8; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; margin:0; color:var(--ink); background:var(--bg); line-height:1.55; }
+  .wrap { max-width:720px; margin:0 auto; padding:20px 16px 64px; }
+  h1 { font-size:1.7rem; margin:0.4em 0 0.2em; }
+  h2 { font-size:1.25rem; margin-top:2em; border-top:2px solid var(--line); padding-top:1em; }
+  .lede { color:var(--muted); font-size:1.05rem; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; margin:14px 0; }
+  .ziprow { display:flex; gap:8px; margin-top:8px; }
+  input[type=text] { flex:1; font-size:1.1rem; padding:10px 12px; border:2px solid var(--line); border-radius:8px; }
+  button { font-size:1.05rem; padding:10px 18px; border-radius:8px; border:0; background:var(--accent); color:#fff; cursor:pointer; }
+  button.secondary { background:#fff; color:var(--accent); border:2px solid var(--accent); }
+  button:active { transform:translateY(1px); }
+  .bignum { font-size:2rem; font-weight:700; }
+  .vs { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:12px 0; }
+  .vs .card { margin:0; text-align:center; }
+  .vs .winner { border:2px solid var(--good); }
+  .tag { display:inline-block; font-size:0.8rem; padding:2px 10px; border-radius:20px; background:#e8f5e9; color:var(--good); font-weight:600; }
+  .tag.rural { background:#fff3e0; color:var(--warn); }
+  .tag.urban { background:#e3f2fd; color:#0d47a1; }
+  .fine { font-size:0.85rem; color:var(--muted); }
+  table.cost { width:100%; border-collapse:collapse; margin:10px 0; }
+  table.cost td, table.cost th { padding:8px 6px; border-bottom:1px solid var(--line); text-align:right; }
+  table.cost td:first-child, table.cost th:first-child { text-align:left; }
+  .src { font-size:0.85rem; color:var(--muted); }
+  .src li { margin-bottom:6px; }
+  .gap { background:#fff8e1; border:1px solid #ffe082; border-radius:10px; padding:14px 16px; margin:14px 0; }
+  .emailbox { background:#e8f0fe; }
+  input[type=number] { width:110px; font-size:1.05rem; padding:8px 10px; border:2px solid var(--line); border-radius:8px; }
+  footer { margin-top:3em; padding-top:1em; border-top:1px solid var(--line); }
+  @media (max-width:520px){ .vs{grid-template-columns:1fr;} .bignum{font-size:1.6rem;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>📡 Rural Broadband Fix — Oregon</h1>
+<p class="lede">Oregon is spending <strong>$689 million</strong> to get high-speed internet to 104,654 homes and businesses that don't have it. Here's what that costs per location — and what the alternative looks like.</p>
+
+<h2>1. Your ZIP code</h2>
+<div class="card">
+  <label for="zip"><strong>Enter your Oregon ZIP:</strong></label>
+  <div class="ziprow">
+    <input type="text" id="zip" inputmode="numeric" maxlength="5" placeholder="e.g. 97355" aria-label="ZIP code">
+    <button id="go">Look up</button>
+  </div>
+  <div id="zipout" style="margin-top:12px;"></div>
+</div>
+
+<h2>2. The math</h2>
+<div class="card">
+  <p><strong>Per location</strong> — what it costs to connect one home or business:</p>
+  <div class="vs">
+    <div class="card winner">
+      <div>🛰️ <strong>Starlink</strong></div>
+      <div class="bignum" id="slPer">$3,469</div>
+      <div class="fine">$349 kit + $130/mo × 24 months.<br>Or $0 upfront + $10/mo kit rental.</div>
+    </div>
+    <div class="card">
+      <div>🔌 <strong>Fiber buildout</strong></div>
+      <div class="bignum" id="fibPer">$9,421</div>
+      <div class="fine">Oregon BEAD approved average<br>($517M ÷ 54,895 locations).</div>
+    </div>
+  </div>
+  <p><strong>Statewide</strong> — all 104,654 Oregon locations still waiting:</p>
+  <table class="cost">
+    <tr><th>Approach</th><th>Total</th></tr>
+    <tr><td>🛰️ Starlink for every location</td><td id="slState"><strong>$363.0M</strong></td></tr>
+    <tr><td>🔌 Fiber for every location</td><td id="fibState"><strong>$985.9M</strong></td></tr>
+    <tr><td><strong>Difference</strong></td><td id="diffState"><strong>$622.9M</strong></td></tr>
+  </table>
+  <p class="fine">Same homes connected. One costs $623 million less. Fiber lasts decades longer — that's the real tradeoff, and it's stated plainly below.</p>
+</div>
+
+<div class="card">
+  <p><strong>Your area:</strong> roughly how many homes near you still lack good internet?
+  <input type="number" id="homes" value="300" min="1" max="100000"> <button class="secondary" id="calc">Calculate</button></p>
+  <div id="calcOut"></div>
+</div>
+
+<h2>3. When will I get fiber?</h2>
+<div class="card" id="fiberwhen">
+  <p>Honest answer: <strong>there's no public date for your address.</strong> Here's what IS known about Oregon's plan:</p>
+  <ul>
+    <li><strong>Right now (Oct 2026):</strong> all provider contracts are signed. Most construction starts <strong>late 2026</strong>.</li>
+    <li><strong>Federal deadline:</strong> providers have 4 years from signing — so about <strong>September 2030</strong>.</li>
+    <li><strong>Not everyone gets fiber.</strong> Oregon's approved plan: <strong>52.5% fiber, 46.4% satellite, 1.1% fixed wireless.</strong> Nearly half of funded locations are getting satellite, not fiber.</li>
+  </ul>
+  <div class="gap">
+    <strong>Why no exact date?</strong> Each provider's build schedule lives inside its contract with the state, and those schedules aren't published. The state runs an address lookup showing <em>which technology and company</em> will serve you — but not <em>when</em>.
+  </div>
+  <p>
+    <a href="https://www.oregon.gov/biz/programs/BEAD/" target="_blank" rel="noopener"><button type="button">Check your address on Oregon's BEAD tool →</button></a>
+  </p>
+  <p class="fine">If your address shows "LEO satellite," that's Starlink or Amazon — you're not waiting on fiber at all.</p>
+</div>
+
+<h2>4. Count me in — Starlink instead of waiting</h2>
+<div class="card" id="optin">
+  <p><strong>This isn't a government signup — it's a public show of hands.</strong>
+  If fiber is years away for your area (or you're slated for satellite anyway),
+  add your household to the count of Oregonians who'd take Starlink today.</p>
+  <div id="optinTotals" style="margin:12px 0;"></div>
+  <div class="ziprow">
+    <input type="text" id="optzip" inputmode="numeric" maxlength="5" placeholder="Your ZIP" aria-label="Your ZIP code">
+    <button id="optBtn">Count me in</button>
+  </div>
+  <div id="optinMsg" style="margin-top:10px;"></div>
+  <p class="fine">Anonymous: no name, no email, nothing stored but the ZIP tally.
+  One tap per browser per ZIP (saved on your device).</p>
+</div>
+
+<h2>5. Email your reps</h2>
+<div class="card emailbox">
+  <p>One button opens a pre-written email with the numbers above. <strong>You address it</strong> — look up your people first:</p>
+  <p>
+    <a href="https://www.house.gov/representatives/find-your-representative" target="_blank" rel="noopener">Find your House rep →</a><br>
+    <a href="https://www.senate.gov/senators/senators-contact.htm" target="_blank" rel="noopener">Find your Senators →</a>
+  </p>
+  <button id="emailBtn">✉️ Open the email</button>
+  <p class="fine">Opens in your own email app. Nothing is sent automatically — you review and hit send.</p>
+</div>
+
+<h2>6. Days vs. years — time to service</h2>
+<div class="card">
+  <div class="vs">
+    <div class="card winner">
+      <div>🛰️ <strong>Starlink</strong></div>
+      <div class="bignum">1–2 weeks</div>
+      <div class="fine">Order at starlink.com. Kit ships in 1–2 weeks in the U.S. Self-install in an afternoon — online in under a month.</div>
+    </div>
+    <div class="card">
+      <div>🔌 <strong>Fiber (BEAD)</strong></div>
+      <div class="bignum">up to 4 years</div>
+      <div class="fine">Contracts signed Sep 2026; construction starts late 2026; federal deadline ~Sep 2030. Your address could wait the full term — or never get fiber at all.</div>
+    </div>
+  </div>
+  <p class="fine">This isn't an argument that fiber is bad. It's an argument that waiting until 2030 for it has a cost — see below.</p>
+</div>
+
+<h2>7. What your taxes already paid for</h2>
+<div class="card">
+  <p>BEAD isn't the first program to promise rural broadband. The track record:</p>
+  <table class="cost">
+    <tr><th>Program</th><th>Committed</th><th>Result</th></tr>
+    <tr><td>Connect America Fund II auction (2018)</td><td><strong>$1.49B</strong> / 10 yrs</td><td>103 bidders, 713,176 locations in 45 states — but speeds as low as 25/3 Mbps, below today's 100/20 standard</td></tr>
+    <tr><td>Rural Digital Opportunity Fund (2020)</td><td><strong>$20.4B</strong> / 10 yrs</td><td>Two biggest Phase I winners — LTD Broadband ($1.32B) and Starlink ($885.5M) — had awards <strong>revoked by the FCC in 2022</strong> for failing to show they could deliver</td></tr>
+  </table>
+  <p>A decade of auctions, billions committed — and 104,654 Oregon locations <em>still</em> waiting. New programs deserve scrutiny, not blind faith.</p>
+</div>
+
+<h2>8. What a year offline costs</h2>
+<div class="card">
+  <p>Waiting has a price tag too — paid by the household, not the program:</p>
+  <ul>
+    <li><strong>$1,950/year per household</strong> — the average economic value of broadband access. Across 6.3 million unconnected rural co-op households, that's <strong>$68.2 billion</strong> in lost value (National Rural Electric Cooperative Association).</li>
+    <li><strong>$370,000/year per rural hospital</strong> — the cost of not having telemedicine, in a study of 24 rural hospitals (USDA Economic Research Service).</li>
+    <li><strong>Higher incomes where broadband lands</strong> — a peer-reviewed study by an Oklahoma State economist found rural broadband adoption associated with higher median household income and more small businesses.</li>
+  </ul>
+  <p class="fine">Every year a family waits for a trench is a year of remote work, telehealth, and online schooling they don't get.</p>
+</div>
+
+<h2>9. The honest limitations</h2>
+<div class="card">
+  <p><strong>Starlink is not fiber.</strong> Anyone who tells you otherwise is selling something. Here's what the data says:</p>
+  <ul>
+    <li><strong>Rain.</strong> Starlink uses Ku/Ka-band radio, which rain absorbs. A Finnish university study measured <strong>38% slower downloads and 52% slower uploads during rain</strong> (service stayed up 98.5%+ of the time). In rainy western Oregon, expect slowdowns in storms — not outages, but slower.</li>
+    <li><strong>Latency.</strong> Starlink runs <strong>20–60 ms</strong> vs. fiber's <strong>5–20 ms</strong>. Fine for video calls and streaming; competitive gamers will feel the difference.</li>
+    <li><strong>Uploads.</strong> Starlink: 10–20 Mbps up. Fiber: often symmetrical gigabit. Video creators and heavy uploaders notice.</li>
+    <li><strong>Lifespan.</strong> A dish lasts roughly <strong>5–7 years</strong>; fiber in the ground lasts <strong>30–50</strong>. Over decades, fiber wins on durability — that's the genuine tradeoff.</li>
+    <li><strong>Congestion.</strong> Speeds dip at peak evening hours as more users share a satellite cell. Fiber doesn't have this problem.</li>
+  </ul>
+  <p class="fine">We show this because the argument for Starlink doesn't need hype — it needs the math to hold up under scrutiny. It does.</p>
+</div>
+
+<h2>Sources &amp; honesty notes</h2>
+<ul class="src">
+  <li><strong>FCC broadband benchmark: 100/20 Mbps</strong> — FCC 24-27 (Mar 14, 2024); confirmed current Apr 2026. Under BEAD law, "unserved" = below 25/3, "underserved" = below 100/20.</li>
+  <li><strong>Oregon BEAD: $689M, 104,654 locations</strong> — Final Proposal approved by NTIA Feb 4, 2026 (Business Oregon; Benton Institute).</li>
+  <li><strong>Fiber $9,421/location; satellite $550/location</strong> — Oregon Legislature briefing on the approved Final Proposal (2026R1): $517.2M ÷ 54,895 fiber locations; $26.7M ÷ 48,631 satellite locations.</li>
+  <li><strong>Starlink $349 kit; $130/mo Residential Max</strong> — starlink.com (read Sep 7 &amp; Oct 13, 2026); June 18, 2026 price increase. $0-upfront + $10/mo rental option since June 2026 (address-dependent).</li>
+  <li><strong>Timeline: contracts by Sep 18, 2026; ~Sep 2030 deadline</strong> — 4-year build requirement (IIJA §60102(h)(4)(C)); Oregon Broadband Office: most construction starts late 2026.</li>
+  <li><strong>ZIP → county/area</strong> — U.S. Census Bureau 2023 Gazetteer + 2020 ZCTA-to-county file. Rural/suburban/urban tag is a rough read from land area, not an official designation.</li>
+  <li><strong>Starlink ships in 1–2 weeks (U.S.)</strong> — satellitesnetwork.com 2026 U.S. pricing/speed guide; consistent with Starlink's own checkout estimates. Self-install, no technician visit.</li>
+  <li><strong>CAF II: $1.488B over 10 years, 103 bidders, 713,176 locations, 45 states</strong> — Universal Service Administrative Company (USAC), administrator of the fund; speeds as low as 25/3 Mbps per FCC auction tiers.</li>
+  <li><strong>RDOF: $20.4B over 10 years; LTD ($1.32B) and Starlink ($885.5M) awards revoked Aug 2022</strong> — FCC order, reported by The Register, Light Reading, SpaceNews; $5B+ authorized to 3M+ locations per FCC via SpaceNews (2025).</li>
+  <li><strong>$1,950/yr household broadband value; $68.2B lost across 6.3M co-op households</strong> — National Rural Electric Cooperative Association (NRECA) study, via Broadband Communities.</li>
+  <li><strong>$370,000/yr per rural hospital without telemedicine</strong> — USDA Economic Research Service (ERR-78), study of 24 rural hospitals.</li>
+  <li><strong>Broadband adoption tied to higher rural incomes</strong> — peer-reviewed study by an Oklahoma State University economist (cited via secondary summary; primary paper not independently pulled).</li>
+  <li><strong>Rain: 52% uplink / 38% downlink degradation; 98.5%+ availability</strong> — VTT Technical Research Centre of Finland / University of Oulu, "Impact of Weather on Satellite Communication: Evaluating Starlink Resilience" (arXiv 2505.04772).</li>
+  <li><strong>Latency: Starlink 20–60 ms; fiber 5–20 ms; uploads 10–20 Mbps vs symmetrical gigabit</strong> — compiled from Ookla Feb 2023 U.S. medians (via secondary) and multiple 2025–2026 comparison tests; ranges, not guarantees.</li>
+  <li><strong>Dish lifespan ~5–7 years vs fiber 30–50</strong> — industry-standard figures; no single primary source verified (see DATA_NOTES.md).</li>
+  <li><strong>What's NOT here:</strong> per-ZIP counts of unserved homes. That comes from the FCC's Broadband Data Collection bulk file, which requires a free FCC account to download. <a href="https://broadbandmap.fcc.gov/data-download" target="_blank" rel="noopener">Get it here</a> — then the site's build script (<code>build_data.py</code>) turns it into per-ZIP data. No numbers on this page are invented; the cost math uses the verified statewide figures above.</li>
+</ul>
+
+<footer>
+  <p class="fine">Rural Broadband Fix — Oregon. Built Oct 2026. No login, no tracking, no ads. Data: FCC, NTIA, Oregon Broadband Office, U.S. Census Bureau, Starlink.</p>
+</footer>
+
+</div>
+<script>
+// === Opt-in counter config ===
+// Paste the Apps Script Web App /exec URL here to enable live shared totals.
+// Leave empty ('') and the page runs in local-only mode (see counter-backend/Code.gs).
+const COUNTER_ENDPOINT = '';
+
+let D = null;
+const $ = id => document.getElementById(id);
+const fmt$ = n => '$' + Math.round(n).toLocaleString('en-US');
+const fmtM = n => '$' + (n/1e6).toFixed(1) + 'M';
+
+// ---- anonymous opt-in state (localStorage: which ZIPs this browser tapped) ----
+function getOptins() {
+  try { return JSON.parse(localStorage.getItem('rbf_optins') || '[]'); }
+  catch (e) { return []; }
+}
+function hasOpted(zip) { return getOptins().indexOf(zip) !== -1; }
+function markOpted(zip) {
+  const a = getOptins();
+  if (a.indexOf(zip) === -1) { a.push(zip); }
+  try { localStorage.setItem('rbf_optins', JSON.stringify(a)); } catch (e) {}
+}
+
+// ---- JSONP helper (static page <-> Apps Script without CORS issues) ----
+let __jsonpSeq = 0;
+function jsonp(url, cb) {
+  const name = '__rbf_cb_' + (++__jsonpSeq) + '_' + Date.now();
+  window[name] = function (data) { try { cb(data); } finally { delete window[name]; s.remove(); } };
+  const s = document.createElement('script');
+  s.src = url + (url.indexOf('?') === -1 ? '?' : '&') + 'callback=' + name;
+  s.onerror = function () { delete window[name]; s.remove(); cb(null); };
+  document.head.appendChild(s);
+}
+
+let liveTotals = null; // {total, zips:{}} from backend, when configured
+
+function renderTotals() {
+  const el = $('optinTotals');
+  const myZip = ($('optzip').value || '').trim() || ($('zip').value || '').trim();
+  if (COUNTER_ENDPOINT && liveTotals) {
+    const zc = (myZip && liveTotals.zips[myZip]) || 0;
+    el.innerHTML =
+      '<div class="vs"><div class="card winner"><div class="bignum">' + zc.toLocaleString() + '</div>' +
+      '<div class="fine">households in ' + (myZip || 'this ZIP') + ' would take Starlink today</div></div>' +
+      '<div class="card"><div class="bignum">' + (liveTotals.total || 0).toLocaleString() + '</div>' +
+      '<div class="fine">households statewide and counting</div></div></div>';
+  } else if (hasOpted(myZip) && myZip) {
+    el.innerHTML = '<p>✓ <strong>You\'re counted in ' + myZip + '</strong> on this device. ' +
+      '<span class="fine">Live district totals appear here once the counter service is connected.</span></p>';
+  } else {
+    el.innerHTML = '<p class="fine">Tap "Count me in" to add your household. ' +
+      (COUNTER_ENDPOINT ? 'Live totals load below.' : 'Shared totals will appear here once the counter service is connected — your tap is saved on this device either way.') + '</p>';
+  }
+  const btn = $('optBtn');
+  if (myZip && hasOpted(myZip)) {
+    btn.disabled = true;
+    btn.textContent = '✓ Counted';
+    btn.style.opacity = '0.6';
+  } else {
+    btn.disabled = false;
+    btn.textContent = 'Count me in';
+    btn.style.opacity = '1';
+  }
+}
+
+function refreshTotals() {
+  if (!COUNTER_ENDPOINT) { renderTotals(); return; }
+  jsonp(COUNTER_ENDPOINT, function (data) {
+    if (data && data.ok) { liveTotals = data; }
+    renderTotals();
+  });
+}
+
+function doOptin() {
+  let z = ($('optzip').value || '').trim() || ($('zip').value || '').trim();
+  const msg = $('optinMsg');
+  if (!/^\d{5}$/.test(z) || !(D && D.zips[z])) {
+    msg.innerHTML = '<p>❌ Enter a valid Oregon ZIP first.</p>';
+    return;
+  }
+  if (hasOpted(z)) { msg.innerHTML = '<p>✓ Already counted in ' + z + ' on this device.</p>'; renderTotals(); return; }
+  markOpted(z);
+  if (COUNTER_ENDPOINT) {
+    msg.innerHTML = '<p>Counting…</p>';
+    jsonp(COUNTER_ENDPOINT + '?optin=' + encodeURIComponent(z), function (data) {
+      if (data && data.ok) { liveTotals = { total: data.total, zips: Object.assign({}, liveTotals ? liveTotals.zips : {}, { [z]: data.zipCount }) }; }
+      msg.innerHTML = '<p>✓ <strong>Counted in ' + z + '.</strong> Thank you — every tap is public demand evidence.</p>';
+      renderTotals();
+    });
+  } else {
+    msg.innerHTML = '<p>✓ <strong>Counted in ' + z + '</strong> on this device.</p>';
+    renderTotals();
+  }
+}
+$('optBtn').addEventListener('click', doOptin);
+$('optzip').addEventListener('keydown', e => { if (e.key === 'Enter') doOptin(); });
+
+fetch('data.json').then(r => r.json()).then(d => {
+  D = d;
+  $('slPer').textContent = fmt$(d.costs.starlink.total_per_location_usd);
+  $('fibPer').textContent = fmt$(d.costs.fiber.per_location_usd);
+  const sw = d.costs.statewide_comparison;
+  $('slState').innerHTML = '<strong>' + fmtM(sw.starlink_total_usd) + '</strong>';
+  $('fibState').innerHTML = '<strong>' + fmtM(sw.fiber_total_usd) + '</strong>';
+  $('diffState').innerHTML = '<strong>' + fmtM(sw.difference_usd) + '</strong>';
+  calc();
+  refreshTotals();
+}).catch(() => { $('zipout').textContent = 'Could not load data file.'; });
+
+function tag(cls, txt){ return '<span class="tag ' + cls + '">' + txt + '</span>'; }
+
+$('go').addEventListener('click', lookup);
+$('zip').addEventListener('keydown', e => { if (e.key === 'Enter') lookup(); });
+
+function lookup(){
+  const z = $('zip').value.trim();
+  const out = $('zipout');
+  if (!D) { out.textContent = 'Data still loading…'; return; }
+  const rec = D.zips[z];
+  if (!/^\d{5}$/.test(z) || !rec) {
+    out.innerHTML = '<p>❌ <strong>' + z + '</strong> isn\'t an Oregon ZIP in our data. Try another (Oregon only for now).</p>';
+    return;
+  }
+  const rc = rec.rural_class;
+  const cls = rc === 'rural' ? 'rural' : rc === 'urban' ? 'urban' : '';
+  // carry the ZIP into the opt-in box
+  if ($('optzip') && !$('optzip').value) { $('optzip').value = rec.zip; }
+  renderTotals();
+  out.innerHTML =
+    '<p>📍 <strong>ZIP ' + rec.zip + '</strong> — ' + rec.county_name +
+    ' · ' + rec.land_sqmi + ' sq mi ' + tag(cls, rc) + '</p>' +
+    '<p class="fine">Per-ZIP unserved-home counts need the FCC bulk file (see Sources). ' +
+    'Statewide, Oregon has <strong>' + D.oregon_bead.eligible_locations.toLocaleString() +
+    '</strong> locations without 100/20 Mbps. At ' + fmt$(D.costs.starlink.total_per_location_usd) +
+    ' per Starlink setup vs ' + fmt$(D.costs.fiber.per_location_usd) + ' per fiber location, the math below applies everywhere.</p>';
+}
+
+function calc(){
+  if (!D) return;
+  const n = Math.max(1, parseInt($('homes').value || '0', 10));
+  const sl = n * D.costs.starlink.total_per_location_usd;
+  const fb = n * D.costs.fiber.per_location_usd;
+  $('calcOut').innerHTML =
+    '<table class="cost"><tr><th></th><th>' + n.toLocaleString() + ' homes</th></tr>' +
+    '<tr><td>🛰️ Starlink (' + fmt$(D.costs.starlink.total_per_location_usd) + ' each)</td><td><strong>' + fmt$(sl) + '</strong></td></tr>' +
+    '<tr><td>🔌 Fiber (' + fmt$(D.costs.fiber.per_location_usd) + ' each)</td><td><strong>' + fmt$(fb) + '</strong></td></tr>' +
+    '<tr><td><strong>You save</strong></td><td><strong>' + fmt$(fb - sl) + '</strong></td></tr></table>' +
+    '<p class="fine">Starlink total = $349 kit + $130/mo × 24 mo per home. Fiber = Oregon BEAD approved average per location. ' +
+    'Fiber lasts 30–50 years; satellite dishes need replacing every 5–7 — the honest tradeoff.</p>';
+}
+$('calc').addEventListener('click', calc);
+
+$('emailBtn').addEventListener('click', () => {
+  if (!D) return;
+  const c = D.costs, sw = c.statewide_comparison;
+  const subject = encodeURIComponent('Rural broadband: do the math before you spend $689M');
+  const body = encodeURIComponent(
+'Hello,\n\n' +
+'Oregon is spending $689 million in BEAD funds to connect 104,654 locations that lack 100/20 Mbps broadband.\n\n' +
+'The state\'s own approved numbers:\n' +
+'- Fiber: $9,421 per location ($517M for 54,895 locations)\n' +
+'- Satellite: $550 per location ($26.7M for 48,631 locations)\n\n' +
+'A Starlink setup costs $349 for the kit plus $130/month. Two years of service: $3,469 per home.\n\n' +
+'Connecting all 104,654 locations:\n' +
+'- Starlink: ~$363 million\n' +
+'- Fiber everywhere: ~$986 million\n' +
+'Difference: ~$623 million.\n\n' +
+'Fiber lasts decades; that\'s the real tradeoff and it should be debated openly. But rural families ' +
+'waiting until ~2030 for a trench deserve to know the faster, cheaper option exists today.\n\n' +
+'Please ask why satellite isn\'t the default for the hardest-to-reach half of these locations.\n\n' +
+'Sources: FCC 24-27 (100/20 benchmark); Oregon BEAD Final Proposal (NTIA-approved Feb 4, 2026); starlink.com pricing.\n\n' +
+'Thank you.'
+  );
+  window.location.href = 'mailto:?' + 'subject=' + subject + '&body=' + body;
+});
+</script>
+</body>
+</html>

@@ -41,6 +41,7 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#16265c">
 <link rel="apple-touch-icon" href="assets/icon-192.png">
+<script src="assets/states.js"></script>
 </head>
 <body>
 <button id="install-btn" title="Install app" style="display:none;position:fixed;top:12px;right:12px;z-index:9999;background:#16265c;color:#fff;border:none;border-radius:8px;padding:10px 14px;font-size:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)">⬇ Get App</button>
@@ -64,12 +65,23 @@ document.getElementById('share-btn').addEventListener('click', function() {
 </script>
 <div class="wrap">
 
-<h1>📡 Rural Broadband Fix — Oregon</h1>
-<p class="lede">Oregon is spending <strong>$689 million</strong> to get high-speed internet to 104,654 homes and businesses that don't have it. Here's what that costs per location — and what the alternative looks like.</p>
+<div class="card" id="statepicker" style="margin-bottom:8px;">
+  <label for="stateSel"><strong>Your state:</strong></label>
+  <select id="stateSel" style="font-size:1.05rem;padding:8px 10px;border:2px solid var(--line);border-radius:8px;margin-left:8px;">
+    <option value="OR">Oregon</option>
+    <option value="TX">Texas</option>
+    <option value="CA">California</option>
+    <option value="MO">Missouri</option>
+  </select>
+  <span class="fine" style="margin-left:8px;">Or just enter your ZIP below — we'll detect it.</span>
+</div>
+
+<h1>📡 <span id="stTitle">Rural Broadband Fix — Oregon</span></h1>
+<p class="lede" id="stLede">Oregon is spending <strong>$689 million</strong> to get high-speed internet to 104,654 homes and businesses that don't have it. Here's what that costs per location — and what the alternative looks like.</p>
 
 <h2>1. Your ZIP code</h2>
 <div class="card">
-  <label for="zip"><strong>Enter your Oregon ZIP:</strong></label>
+  <label for="zip"><strong id="stZipLabel">Enter your Oregon ZIP:</strong></label>
   <div class="ziprow">
     <input type="text" id="zip" inputmode="numeric" maxlength="5" placeholder="e.g. 97355" aria-label="ZIP code">
     <button id="go">Look up</button>
@@ -89,10 +101,10 @@ document.getElementById('share-btn').addEventListener('click', function() {
     <div class="card">
       <div>🔌 <strong>Fiber buildout</strong></div>
       <div class="bignum" id="fibPer">$9,421</div>
-      <div class="fine">Oregon BEAD approved average<br>($517M ÷ 54,895 locations).</div>
+      <div class="fine" id="fibBasis">Oregon BEAD approved average<br>($517M ÷ 54,895 locations).</div>
     </div>
   </div>
-  <p><strong>Statewide</strong> — all 104,654 Oregon locations still waiting:</p>
+  <p><strong>Statewide</strong> — <span id="stStatewideLine">all 104,654 Oregon locations still waiting:</span></p>
   <table class="cost">
     <tr><th>Approach</th><th>Total</th></tr>
     <tr><td>🛰️ Starlink for every location</td><td id="slState"><strong>$363.0M</strong></td></tr>
@@ -110,17 +122,17 @@ document.getElementById('share-btn').addEventListener('click', function() {
 
 <h2>3. When will I get fiber?</h2>
 <div class="card" id="fiberwhen">
-  <p>Honest answer: <strong>there's no public date for your address.</strong> Here's what IS known about Oregon's plan:</p>
+  <p>Honest answer: <strong>there's no public date for your address.</strong> <span id="stFiberKnown">Here's what IS known about Oregon's plan:</span></p>
   <ul>
     <li><strong>Right now (Oct 2026):</strong> all provider contracts are signed. Most construction starts <strong>late 2026</strong>.</li>
     <li><strong>Federal deadline:</strong> providers have 4 years from signing — so about <strong>September 2030</strong>.</li>
-    <li><strong>Not everyone gets fiber.</strong> Oregon's approved plan: <strong>52.5% fiber, 46.4% satellite, 1.1% fixed wireless.</strong> Nearly half of funded locations are getting satellite, not fiber.</li>
+    <li><strong>Not everyone gets fiber.</strong> <span id="stTechMix">Oregon's approved plan: <strong>52.5% fiber, 46.4% satellite, 1.1% fixed wireless.</strong> Nearly half of funded locations are getting satellite, not fiber.</span></li>
   </ul>
   <div class="gap">
     <strong>Why no exact date?</strong> Each provider's build schedule lives inside its contract with the state, and those schedules aren't published. The state runs an address lookup showing <em>which technology and company</em> will serve you — but not <em>when</em>.
   </div>
   <p>
-    <a href="https://www.oregon.gov/biz/programs/BEAD/" target="_blank" rel="noopener"><button type="button">Check your address on Oregon's BEAD tool →</button></a>
+    <a id="stBeadTool" href="https://www.oregon.gov/biz/programs/BEAD/" target="_blank" rel="noopener"><button type="button">Check your address on Oregon's BEAD tool →</button></a>
   </p>
   <p class="fine">If your address shows "LEO satellite," that's Starlink or Amazon — you're not waiting on fiber at all.</p>
 </div>
@@ -129,7 +141,7 @@ document.getElementById('share-btn').addEventListener('click', function() {
 <div class="card" id="optin">
   <p><strong>This isn't a government signup — it's a public show of hands.</strong>
   If fiber is years away for your area (or you're slated for satellite anyway),
-  add your household to the count of Oregonians who'd take Starlink today.</p>
+  <span id="stOptinLine">add your household to the count of Oregonians who'd take Starlink today.</span></p>
   <div id="optinTotals" style="margin:12px 0;"></div>
   <div class="ziprow">
     <input type="text" id="optzip" inputmode="numeric" maxlength="5" placeholder="Your ZIP" aria-label="Your ZIP code">
@@ -176,7 +188,7 @@ document.getElementById('share-btn').addEventListener('click', function() {
     <tr><td>Connect America Fund II auction (2018)</td><td><strong>$1.49B</strong> / 10 yrs</td><td>103 bidders, 713,176 locations in 45 states — but speeds as low as 25/3 Mbps, below today's 100/20 standard</td></tr>
     <tr><td>Rural Digital Opportunity Fund (2020)</td><td><strong>$20.4B</strong> / 10 yrs</td><td>Two biggest Phase I winners — LTD Broadband ($1.32B) and Starlink ($885.5M) — had awards <strong>revoked by the FCC in 2022</strong> for failing to show they could deliver</td></tr>
   </table>
-  <p>A decade of auctions, billions committed — and 104,654 Oregon locations <em>still</em> waiting. New programs deserve scrutiny, not blind faith.</p>
+  <p>A decade of auctions, billions committed — and <span id="stWaitingLine">104,654 Oregon locations <em>still</em> waiting.</span> New programs deserve scrutiny, not blind faith.</p>
 </div>
 
 <h2>8. What a year offline costs</h2>
@@ -224,7 +236,7 @@ document.getElementById('share-btn').addEventListener('click', function() {
 </ul>
 
 <footer>
-  <p class="fine">Rural Broadband Fix — Oregon. Built Oct 2026. No login, no tracking, no ads. Data: FCC, NTIA, Oregon Broadband Office, U.S. Census Bureau, Starlink.</p>
+  <p class="fine" id="stFooter">Rural Broadband Fix — Oregon. Built Oct 2026. No login, no tracking, no ads. Data: FCC, NTIA, Oregon Broadband Office, U.S. Census Bureau, Starlink.</p>
 </footer>
 
 </div>
@@ -273,6 +285,77 @@ try {
 
 let liveTotals = null; // {total, zips:{}} from backend, when configured
 
+// ---- multi-state support ----
+var CUR_STATE = 'OR';
+try {
+  var sm = location.search.match(/[?&]state=([A-Za-z]{2})/);
+  if (sm && window.RBF_STATES && window.RBF_STATES[sm[1].toUpperCase()]) {
+    CUR_STATE = sm[1].toUpperCase();
+  }
+} catch (e) {}
+
+function stateName() { return window.RBF_STATES[CUR_STATE].name; }
+
+function applyState(st) {
+  if (!window.RBF_STATES || !window.RBF_STATES[st]) return;
+  CUR_STATE = st;
+  var S = window.RBF_STATES[st];
+  var SL = window.RBF_STARLINK_PER_LOCATION || 3469;
+  document.title = 'Rural Broadband Fix — ' + S.name;
+  $('stTitle').textContent = 'Rural Broadband Fix — ' + S.name;
+  $('stLede').innerHTML = S.name + ' is spending <strong>' + S.bead_allocation_label +
+    '</strong> to get high-speed internet to ' + S.locations.toLocaleString() +
+    ' homes and businesses that don\'t have it. Here\'s what that costs per location — and what the alternative looks like.';
+  $('stZipLabel').textContent = 'Enter your ' + S.name + ' ZIP:';
+  $('stateSel').value = st;
+  // cost math
+  $('slPer').textContent = fmt$(SL);
+  $('fibPer').textContent = fmt$(S.fiber_per_location_usd);
+  $('fibBasis').innerHTML = S.fiber_basis.replace(/</g,'&lt;');
+  var slT = S.locations * SL, fbT = S.locations * S.fiber_per_location_usd;
+  $('slState').innerHTML = '<strong>' + fmtM(slT) + '</strong>';
+  $('fibState').innerHTML = '<strong>' + fmtM(fbT) + '</strong>';
+  $('diffState').innerHTML = '<strong>' + fmtM(fbT - slT) + '</strong>';
+  $('stStatewideLine').textContent = 'all ' + S.locations.toLocaleString() + ' ' + S.name + ' locations still waiting:';
+  $('stFiberKnown').textContent = 'Here\'s what IS known about ' + S.name + '\'s plan:';
+  $('stTechMix').innerHTML = S.name + '\'s approved plan: <strong>' + S.tech_mix_label + '.</strong>';
+  $('stBeadTool').href = S.bead_tool_url;
+  $('stBeadTool').querySelector('button').textContent = 'Check your address on ' + S.bead_tool_label + ' →';
+  var demonym = {OR:'Oregonians',TX:'Texans',CA:'Californians',MO:'Missourians'}[st] || (S.name + ' residents');
+  $('stOptinLine').textContent = 'add your household to the count of ' + demonym + ' who\'d take Starlink today.';
+  $('stWaitingLine').innerHTML = S.locations.toLocaleString() + ' ' + S.name + ' locations <em>still</em> waiting.';
+  $('stFooter').textContent = 'Rural Broadband Fix — ' + S.name + '. Built Oct 2026. No login, no tracking, no ads. Data: FCC, NTIA, Starlink.';
+  // update share text
+  var shareBtn = document.getElementById('share-btn');
+  if (shareBtn) {
+    shareBtn.onclick = null;
+    shareBtn.addEventListener('click', function() {
+      var url = window.location.origin + window.location.pathname + '?state=' + st;
+      try {
+        var org = localStorage.getItem('rbf_org') || new URLSearchParams(window.location.search).get('org');
+        if (org) url += '&org=' + encodeURIComponent(org);
+      } catch (e) {}
+      var data = { title: 'Rural Broadband Fix — ' + S.name,
+        text: S.name + ' is spending ' + S.bead_allocation_label + ' on rural internet. See what it costs — and the alternative.',
+        url: url };
+      if (navigator.share) { navigator.share(data).catch(function(){}); }
+      else if (navigator.clipboard) { navigator.clipboard.writeText(url).then(function(){ alert('Link copied — paste it anywhere to share.'); }); }
+      else { prompt('Copy this link to share:', url); }
+    });
+  }
+  renderTotals();
+}
+
+// state picker change
+document.getElementById('stateSel').addEventListener('change', function() {
+  applyState(this.value);
+  try {
+    var u = new URL(window.location.href);
+    u.searchParams.set('state', this.value);
+    window.history.replaceState({}, '', u.toString());
+  } catch (e) {}
+});
+
 function renderTotals() {
   const el = $('optinTotals');
   const myZip = ($('optzip').value || '').trim() || ($('zip').value || '').trim();
@@ -313,8 +396,12 @@ function refreshTotals() {
 function doOptin() {
   let z = ($('optzip').value || '').trim() || ($('zip').value || '').trim();
   const msg = $('optinMsg');
-  if (!/^\d{5}$/.test(z) || !(D && D.zips[z])) {
-    msg.innerHTML = '<p>❌ Enter a valid Oregon ZIP first.</p>';
+  var S = window.RBF_STATES[CUR_STATE];
+  // accept any valid 5-digit ZIP in a supported state (backend validates OR ZIPs; others count locally)
+  var prefix = z.substring(0, 3);
+  var zState = window.RBF_ZIP_TO_STATE && window.RBF_ZIP_TO_STATE[prefix];
+  if (!/^\d{5}$/.test(z) || !zState) {
+    msg.innerHTML = '<p>❌ Enter a valid ZIP in Oregon, Texas, California, or Missouri.</p>';
     return;
   }
   if (hasOpted(z)) { msg.innerHTML = '<p>✓ Already counted in ' + z + ' on this device.</p>'; renderTotals(); return; }
@@ -354,64 +441,86 @@ $('zip').addEventListener('keydown', e => { if (e.key === 'Enter') lookup(); });
 function lookup(){
   const z = $('zip').value.trim();
   const out = $('zipout');
-  if (!D) { out.textContent = 'Data still loading…'; return; }
-  const rec = D.zips[z];
-  if (!/^\d{5}$/.test(z) || !rec) {
-    out.innerHTML = '<p>❌ <strong>' + z + '</strong> isn\'t an Oregon ZIP in our data. Try another (Oregon only for now).</p>';
+  // auto-detect state from ZIP prefix
+  var prefix = z.substring(0, 3);
+  var detected = window.RBF_ZIP_TO_STATE && window.RBF_ZIP_TO_STATE[prefix];
+  if (detected && detected !== CUR_STATE) { applyState(detected); }
+  var S = window.RBF_STATES[CUR_STATE];
+  if (!/^\d{5}$/.test(z)) {
+    out.innerHTML = '<p>❌ Enter a valid 5-digit ZIP.</p>';
     return;
   }
-  const rc = rec.rural_class;
-  const cls = rc === 'rural' ? 'rural' : rc === 'urban' ? 'urban' : '';
-  // carry the ZIP into the opt-in box
-  if ($('optzip') && !$('optzip').value) { $('optzip').value = rec.zip; }
-  renderTotals();
-  out.innerHTML =
-    '<p>📍 <strong>ZIP ' + rec.zip + '</strong> — ' + rec.county_name +
-    ' · ' + rec.land_sqmi + ' sq mi ' + tag(cls, rc) + '</p>' +
-    '<p class="fine">Per-ZIP unserved-home counts need the FCC bulk file (see Sources). ' +
-    'Statewide, Oregon has <strong>' + D.oregon_bead.eligible_locations.toLocaleString() +
-    '</strong> locations without 100/20 Mbps. At ' + fmt$(D.costs.starlink.total_per_location_usd) +
-    ' per Starlink setup vs ' + fmt$(D.costs.fiber.per_location_usd) + ' per fiber location, the math below applies everywhere.</p>';
+  if (!D) { out.textContent = 'Data still loading…'; return; }
+  const rec = D.zips[z];
+  if (S.has_zip_data && rec) {
+    const rc = rec.rural_class;
+    const cls = rc === 'rural' ? 'rural' : rc === 'urban' ? 'urban' : '';
+    if ($('optzip') && !$('optzip').value) { $('optzip').value = rec.zip; }
+    renderTotals();
+    out.innerHTML =
+      '<p>📍 <strong>ZIP ' + rec.zip + '</strong> — ' + rec.county_name +
+      ' · ' + rec.land_sqmi + ' sq mi ' + tag(cls, rc) + '</p>' +
+      '<p class="fine">Per-ZIP unserved-home counts need the FCC bulk file (see Sources). ' +
+      'Statewide, ' + S.name + ' has <strong>' + S.locations.toLocaleString() +
+      '</strong> locations without 100/20 Mbps. At ' + fmt$(window.RBF_STARLINK_PER_LOCATION || 3469) +
+      ' per Starlink setup vs ' + fmt$(S.fiber_per_location_usd) + ' per fiber location, the math below applies everywhere.</p>';
+  } else if (S.has_zip_data) {
+    out.innerHTML = '<p>❌ <strong>' + z + '</strong> isn\'t an ' + S.name + ' ZIP in our data. Try another.</p>';
+  } else {
+    // no per-ZIP data for this state yet — show statewide numbers
+    if ($('optzip') && !$('optzip').value) { $('optzip').value = z; }
+    renderTotals();
+    out.innerHTML =
+      '<p>📍 <strong>ZIP ' + z + '</strong> — ' + S.name + '</p>' +
+      '<p class="fine">Per-ZIP lookup isn\'t loaded for ' + S.name + ' yet. Statewide, ' + S.name + ' has <strong>' +
+      S.locations.toLocaleString() + '</strong> locations without 100/20 Mbps (' + S.approval_note + '). ' +
+      'At ' + fmt$(window.RBF_STARLINK_PER_LOCATION || 3469) + ' per Starlink setup vs ' +
+      fmt$(S.fiber_per_location_usd) + ' per fiber location, the math below applies statewide.</p>';
+  }
 }
 
 function calc(){
-  if (!D) return;
+  var S = window.RBF_STATES[CUR_STATE];
+  var SL = window.RBF_STARLINK_PER_LOCATION || 3469;
   const n = Math.max(1, parseInt($('homes').value || '0', 10));
-  const sl = n * D.costs.starlink.total_per_location_usd;
-  const fb = n * D.costs.fiber.per_location_usd;
+  const sl = n * SL;
+  const fb = n * S.fiber_per_location_usd;
   $('calcOut').innerHTML =
     '<table class="cost"><tr><th></th><th>' + n.toLocaleString() + ' homes</th></tr>' +
-    '<tr><td>🛰️ Starlink (' + fmt$(D.costs.starlink.total_per_location_usd) + ' each)</td><td><strong>' + fmt$(sl) + '</strong></td></tr>' +
-    '<tr><td>🔌 Fiber (' + fmt$(D.costs.fiber.per_location_usd) + ' each)</td><td><strong>' + fmt$(fb) + '</strong></td></tr>' +
+    '<tr><td>🛰️ Starlink (' + fmt$(SL) + ' each)</td><td><strong>' + fmt$(sl) + '</strong></td></tr>' +
+    '<tr><td>🔌 Fiber (' + fmt$(S.fiber_per_location_usd) + ' each)</td><td><strong>' + fmt$(fb) + '</strong></td></tr>' +
     '<tr><td><strong>You save</strong></td><td><strong>' + fmt$(fb - sl) + '</strong></td></tr></table>' +
-    '<p class="fine">Starlink total = $349 kit + $130/mo × 24 mo per home. Fiber = Oregon BEAD approved average per location. ' +
+    '<p class="fine">Starlink total = $349 kit + $130/mo × 24 mo per home. Fiber = ' + S.name + ' BEAD figure per location. ' +
     'Fiber lasts 30–50 years; satellite dishes need replacing every 5–7 — the honest tradeoff.</p>';
 }
 $('calc').addEventListener('click', calc);
 
 $('emailBtn').addEventListener('click', () => {
-  if (!D) return;
-  const c = D.costs, sw = c.statewide_comparison;
-  const subject = encodeURIComponent('Rural broadband: do the math before you spend $689M');
+  var S = window.RBF_STATES[CUR_STATE];
+  var SL = window.RBF_STARLINK_PER_LOCATION || 3469;
+  var slT = S.locations * SL, fbT = S.locations * S.fiber_per_location_usd;
+  const subject = encodeURIComponent('Rural broadband: do the math before you spend ' + S.bead_allocation_label);
   const body = encodeURIComponent(
 'Hello,\n\n' +
-'Oregon is spending $689 million in BEAD funds to connect 104,654 locations that lack 100/20 Mbps broadband.\n\n' +
+S.name + ' is spending ' + S.bead_allocation_label + ' in BEAD funds to connect ' + S.locations.toLocaleString() + ' locations that lack 100/20 Mbps broadband.\n\n' +
 'The state\'s own approved numbers:\n' +
-'- Fiber: $9,421 per location ($517M for 54,895 locations)\n' +
-'- Satellite: $550 per location ($26.7M for 48,631 locations)\n\n' +
-'A Starlink setup costs $349 for the kit plus $130/month. Two years of service: $3,469 per home.\n\n' +
-'Connecting all 104,654 locations:\n' +
-'- Starlink: ~$363 million\n' +
-'- Fiber everywhere: ~$986 million\n' +
-'Difference: ~$623 million.\n\n' +
+'- Fiber: ' + fmt$(S.fiber_per_location_usd) + ' per location (' + S.fiber_basis + ')\n' +
+'- Satellite: ' + fmt$(S.satellite_per_location_usd) + ' per location (' + (S.satellite_basis || 'state BEAD plan') + ')\n\n' +
+'A Starlink setup costs $349 for the kit plus $130/month. Two years of service: ' + fmt$(SL) + ' per home.\n\n' +
+'Connecting all ' + S.locations.toLocaleString() + ' locations:\n' +
+'- Starlink: ~' + fmtM(slT) + '\n' +
+'- Fiber everywhere: ~' + fmtM(fbT) + '\n' +
+'Difference: ~' + fmtM(fbT - slT) + '.\n\n' +
 'Fiber lasts decades; that\'s the real tradeoff and it should be debated openly. But rural families ' +
-'waiting until ~2030 for a trench deserve to know the faster, cheaper option exists today.\n\n' +
-'Please ask why satellite isn\'t the default for the hardest-to-reach half of these locations.\n\n' +
-'Sources: FCC 24-27 (100/20 benchmark); Oregon BEAD Final Proposal (NTIA-approved Feb 4, 2026); starlink.com pricing.\n\n' +
+'waiting years for a trench deserve to know the faster, cheaper option exists today.\n\n' +
+'Please ask why satellite isn\'t the default for the hardest-to-reach locations.\n\n' +
+'Sources: FCC 24-27 (100/20 benchmark); ' + S.name + ' BEAD Final Proposal (' + S.approval_note + '); starlink.com pricing.\n\n' +
 'Thank you.'
   );
   window.location.href = 'mailto:?' + 'subject=' + subject + '&body=' + body;
 });
+// apply initial state (from ?state= or default OR)
+applyState(CUR_STATE);
 </script>
 
 <script>

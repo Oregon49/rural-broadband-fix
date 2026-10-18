@@ -155,6 +155,23 @@ document.getElementById('share-btn').addEventListener('click', function() {
   One tap per browser per ZIP (saved on your device).</p>
 </div>
 
+<div class="card" id="contactCard" style="border:2px solid var(--accent);">
+  <p><strong>Want to be contacted when service is available in your area?</strong>
+  Leave your info below — it goes <strong>directly to the local organization</strong> running outreach in your community. We never see it, never store it.</p>
+  <div style="display:grid;gap:10px;margin:12px 0;">
+    <input type="text" id="cName" placeholder="Full name" aria-label="Full name" style="font-size:1.05rem;padding:10px 12px;border:2px solid var(--line);border-radius:8px;">
+    <input type="text" id="cAddr" placeholder="Street address" aria-label="Street address" style="font-size:1.05rem;padding:10px 12px;border:2px solid var(--line);border-radius:8px;">
+    <div class="ziprow" style="margin:0;">
+      <input type="text" id="cZip" inputmode="numeric" maxlength="5" placeholder="ZIP code" aria-label="ZIP code">
+      <input type="text" id="cPhone" inputmode="tel" placeholder="Phone number" aria-label="Phone number" style="flex:1;font-size:1.05rem;padding:10px 12px;border:2px solid var(--line);border-radius:8px;">
+    </div>
+    <input type="text" id="cEmail" inputmode="email" placeholder="Email (optional)" aria-label="Email" style="font-size:1.05rem;padding:10px 12px;border:2px solid var(--line);border-radius:8px;">
+  </div>
+  <button id="contactBtn">📬 Contact me when it's ready</button>
+  <div id="contactMsg" style="margin-top:10px;"></div>
+  <p class="fine">Your info is emailed directly to the community organization — nothing is stored on this site.</p>
+</div>
+
 <h2>5. Email your reps</h2>
 <div class="card emailbox">
   <p>One button opens a pre-written email with the numbers above. <strong>You address it</strong> — look up your people first:</p>
@@ -423,6 +440,41 @@ function doOptin() {
 }
 $('optBtn').addEventListener('click', doOptin);
 $('optzip').addEventListener('keydown', e => { if (e.key === 'Enter') doOptin(); });
+
+// ---- "Contact me" form: sends info directly to the org's email via backend ----
+function doContact() {
+  const msg = $('contactMsg');
+  const name = ($('cName').value || '').trim();
+  const addr = ($('cAddr').value || '').trim();
+  const zip = ($('cZip').value || '').trim() || ($('zip').value || '').trim();
+  const phone = ($('cPhone').value || '').trim();
+  const email = ($('cEmail').value || '').trim();
+  if (!name || !addr || !/^\d{5}$/.test(zip) || !phone) {
+    msg.innerHTML = '<p>❌ Please fill in your name, street address, ZIP code, and phone number.</p>';
+    return;
+  }
+  if (!COUNTER_ENDPOINT) {
+    msg.innerHTML = '<p>❌ The contact service isn\'t connected yet — please try again later.</p>';
+    return;
+  }
+  msg.innerHTML = '<p>Sending…</p>';
+  const params = '?contact=1'
+    + '&name=' + encodeURIComponent(name)
+    + '&addr=' + encodeURIComponent(addr)
+    + '&zip=' + encodeURIComponent(zip)
+    + '&phone=' + encodeURIComponent(phone)
+    + (email ? '&email=' + encodeURIComponent(email) : '')
+    + (ORG_TAG ? '&org=' + encodeURIComponent(ORG_TAG) : '');
+  jsonp(COUNTER_ENDPOINT + params, function (data) {
+    if (data && data.ok) {
+      msg.innerHTML = '<p>✓ <strong>Sent!</strong> The local organization has your info and will contact you when service is available in ' + zip + '.</p>';
+      $('cName').value = ''; $('cAddr').value = ''; $('cZip').value = ''; $('cPhone').value = ''; $('cEmail').value = '';
+    } else {
+      msg.innerHTML = '<p>❌ Something went wrong — please try again.</p>';
+    }
+  });
+}
+$('contactBtn').addEventListener('click', doContact);
 
 fetch('data.json').then(r => r.json()).then(d => {
   D = d;

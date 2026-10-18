@@ -72,6 +72,9 @@ document.getElementById('share-btn').addEventListener('click', function() {
     <option value="TX">Texas</option>
     <option value="CA">California</option>
     <option value="MO">Missouri</option>
+    <option value="MT">Montana</option>
+    <option value="NM">New Mexico</option>
+    <option value="AZ">Arizona</option>
   </select>
   <span class="fine" style="margin-left:8px;">Or just enter your ZIP below — we'll detect it.</span>
 </div>
@@ -321,7 +324,7 @@ function applyState(st) {
   $('stTechMix').innerHTML = S.name + '\'s approved plan: <strong>' + S.tech_mix_label + '.</strong>';
   $('stBeadTool').href = S.bead_tool_url;
   $('stBeadTool').querySelector('button').textContent = 'Check your address on ' + S.bead_tool_label + ' →';
-  var demonym = {OR:'Oregonians',TX:'Texans',CA:'Californians',MO:'Missourians'}[st] || (S.name + ' residents');
+  var demonym = {OR:'Oregonians',TX:'Texans',CA:'Californians',MO:'Missourians',MT:'Montanans',NM:'New Mexicans',AZ:'Arizonans'}[st] || (S.name + ' residents');
   $('stOptinLine').textContent = 'add your household to the count of ' + demonym + ' who\'d take Starlink today.';
   $('stWaitingLine').innerHTML = S.locations.toLocaleString() + ' ' + S.name + ' locations <em>still</em> waiting.';
   $('stFooter').textContent = 'Rural Broadband Fix — ' + S.name + '. Built Oct 2026. No login, no tracking, no ads. Data: FCC, NTIA, Starlink.';
@@ -401,7 +404,7 @@ function doOptin() {
   var prefix = z.substring(0, 3);
   var zState = window.RBF_ZIP_TO_STATE && window.RBF_ZIP_TO_STATE[prefix];
   if (!/^\d{5}$/.test(z) || !zState) {
-    msg.innerHTML = '<p>❌ Enter a valid ZIP in Oregon, Texas, California, or Missouri.</p>';
+    msg.innerHTML = '<p>❌ Enter a valid ZIP in Oregon, Texas, California, Missouri, Montana, New Mexico, or Arizona.</p>';
     return;
   }
   if (hasOpted(z)) { msg.innerHTML = '<p>✓ Already counted in ' + z + ' on this device.</p>'; renderTotals(); return; }
@@ -424,7 +427,7 @@ $('optzip').addEventListener('keydown', e => { if (e.key === 'Enter') doOptin();
 fetch('data.json').then(r => r.json()).then(d => {
   D = d;
   // merge multi-state ZIP data
-  var stateFiles = {TX:'data-tx.json', CA:'data-ca.json', MO:'data-mo.json'};
+  var stateFiles = {TX:'data-tx.json', CA:'data-ca.json', MO:'data-mo.json', MT:'data-mt.json', NM:'data-nm.json', AZ:'data-az.json'};
   var loads = Object.keys(stateFiles).map(function(st){
     return fetch(stateFiles[st]).then(r => r.json()).then(function(sd){
       Object.keys(sd.zips).forEach(function(z){ D.zips[z] = sd.zips[z]; });

@@ -423,6 +423,15 @@ $('optzip').addEventListener('keydown', e => { if (e.key === 'Enter') doOptin();
 
 fetch('data.json').then(r => r.json()).then(d => {
   D = d;
+  // merge multi-state ZIP data
+  var stateFiles = {TX:'data-tx.json', CA:'data-ca.json', MO:'data-mo.json'};
+  var loads = Object.keys(stateFiles).map(function(st){
+    return fetch(stateFiles[st]).then(r => r.json()).then(function(sd){
+      Object.keys(sd.zips).forEach(function(z){ D.zips[z] = sd.zips[z]; });
+    }).catch(function(){});
+  });
+  return Promise.all(loads);
+}).then(() => {
   $('slPer').textContent = fmt$(d.costs.starlink.total_per_location_usd);
   $('fibPer').textContent = fmt$(d.costs.fiber.per_location_usd);
   const sw = d.costs.statewide_comparison;

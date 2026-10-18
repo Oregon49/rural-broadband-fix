@@ -43,7 +43,7 @@ window.RBF_STATES = {
     approval_note: "Final Proposal approved by NTIA Nov 2025",
     flyer_line: "Texas will pay ~$12,400 per home for fiber — or ~$1,700 per home for Starlink. Same program, same state.",
     zip_prefixes: ["750","751","752","753","754","755","756","757","758","759","760","761","762","763","764","765","766","767","768","769","770","771","772","773","774","775","776","777","778","779","780","781","782","783","784","785","786","787","788","789","790","791","792","793","794","795","796","797","798","799","885"],
-    has_zip_data: false
+    has_zip_data: true
   },
   "CA": {
     name: "California",
@@ -65,7 +65,7 @@ window.RBF_STATES = {
     approval_note: "Final Proposal approved by NTIA July 17, 2026; CPUC ratified Sept 17, 2026",
     flyer_line: "California's own projects pay ~$32,000 per home for fiber. Satellite providers bid ~$1,100 per home. Same goal, 30x the price.",
     zip_prefixes: ["900","901","902","903","904","905","906","907","908","909","910","911","912","913","914","915","916","917","918","919","920","921","922","923","924","925","926","927","928","929","930","931","932","933","934","935","936","937","938","939","940","941","942","943","944","945","946","947","948","949","950","951","952","953","954","955","956","957","958","959","960","961"],
-    has_zip_data: false
+    has_zip_data: true
   },
   "MO": {
     name: "Missouri",
@@ -87,7 +87,7 @@ window.RBF_STATES = {
     approval_note: "Final Proposal approved by NTIA Jan 6, 2026",
     flyer_line: "Missouri is spending 82% of its BEAD money on fiber — but Amazon's satellite bid came in at $644 per home. Ask what the fiber homes cost.",
     zip_prefixes: ["630","631","632","633","634","635","636","637","638","639","640","641","642","643","644","645","646","647","648","649","650","651","652","653","654","655","656","657","658"],
-    has_zip_data: false
+    has_zip_data: true
   }
 };
 // ZIP prefix -> state code lookup
